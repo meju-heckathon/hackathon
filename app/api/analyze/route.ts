@@ -40,6 +40,18 @@ function expandFullRow(bbox: BBox): BBox {
   return { x: 0, y, width: 1, height };
 }
 
+// Boxes belonging to one UI element should sit on roughly the same line.
+// If GPT grouped vertically-distant ocr fragments, return false.
+function isSingleLineCluster(boxes: BBox[]): boolean {
+  if (boxes.length <= 1) return true;
+  const avgH =
+    boxes.reduce((s, b) => s + b.height, 0) / boxes.length || 0.01;
+  const minY = Math.min(...boxes.map((b) => b.y));
+  const maxBottom = Math.max(...boxes.map((b) => b.y + b.height));
+  const vSpread = maxBottom - minY;
+  return vSpread < avgH * 2.5;
+}
+
 export async function POST(request: Request) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
@@ -59,6 +71,11 @@ export async function POST(request: Request) {
   const file = form.get("image");
   const widthRaw = form.get("width");
   const heightRaw = form.get("height");
+  const goalRaw = form.get("goal");
+  const goal =
+    typeof goalRaw === "string" && goalRaw.trim().length > 0
+      ? goalRaw.trim().slice(0, 200)
+      : null;
 
   if (!(file instanceof Blob)) {
     return NextResponse.json({ error: "Missing image field." }, { status: 400 });
@@ -106,7 +123,11 @@ export async function POST(request: Request) {
     ? ocrLines.map((l) => `[${l.id}] "${l.text}"`).join("\n")
     : "(no text was detected)";
 
-  const userText = `Here are the text fragments OCR found on this Korean financial app screenshot, with their ids:\n\n${ocrSummary}\n\nReturn the JSON described in the system prompt.`;
+  const goalLine = goal
+    ? `The user's goal is: "${goal}". Populate the "goalAnswer" field accordingly.\n\n`
+    : `The user gave no specific goal. Set "goalAnswer" to null.\n\n`;
+
+  const userText = `${goalLine}Here are the text fragments OCR found on this Korean financial app screenshot, with their ids:\n\n${ocrSummary}\n\nReturn the JSON described in the system prompt.`;
 
   const client = new OpenAI({ apiKey });
 
@@ -154,20 +175,70 @@ export async function POST(request: Request) {
   const ocrById = new Map(ocrLines.map((l) => [l.id, l]));
   const elements: UIElement[] = [];
   for (const el of modelResult.elements) {
-    const boxes = el.ocrIds
+    let boxes = el.ocrIds
       .map((id) => ocrById.get(id)?.bbox)
       .filter((b): b is BBox => Boolean(b));
     if (boxes.length === 0) continue;
+
+    // Drop vertically-stacked ocr ids that GPT wrongly grouped.
+    // Keep the largest single-line subset by clustering on y.
+    if (!isSingleLineCluster(boxes)) {
+      const sorted = [...boxes].sort((a, b) => a.y - b.y);
+      const groups: BBox[][] = [];
+      for (const b of sorted) {
+        const last = groups[groups.length - 1];
+        const avgH = b.height || 0.01;
+        if (last && Math.abs(b.y - last[0].y) < avgH * 1.5) {
+          last.push(b);
+        } else {
+          groups.push([b]);
+        }
+      }
+      boxes = groups.reduce((best, g) => (g.length > best.length ? g : best));
+    }
+
     let bbox = unionBbox(boxes);
-    if (el.fullRow) bbox = expandFullRow(bbox);
+
+    // Refuse degenerate bboxes that cover most of the screen.
+    if (bbox.width > 0.92 && bbox.height > 0.25 && !el.fullRow) continue;
+
+    if (el.fullRow) {
+      // Only allow full-row expansion when the cluster itself is a tight,
+      // line-shaped object (wide relative to its height).
+      if (bbox.height < 0.08) bbox = expandFullRow(bbox);
+    }
     elements.push({
       id: el.id,
       label: el.label,
       koreanText: el.koreanText,
       explanation: el.explanation,
+      termGloss: el.termGloss ?? null,
       risk: el.risk,
       bbox,
     });
+  }
+
+  let goalAnswer: AnalyzeResult["goalAnswer"] = null;
+  if (goal && modelResult.goalAnswer) {
+    const ga = modelResult.goalAnswer;
+    // Ensure the referenced element actually survived our filtering.
+    const exists =
+      ga.elementId !== null &&
+      elements.some((e) => e.id === ga.elementId);
+    goalAnswer = {
+      goal,
+      found: ga.found && exists,
+      elementId: exists ? ga.elementId : null,
+      rationale: ga.rationale,
+    };
+  } else if (goal) {
+    goalAnswer = {
+      goal,
+      found: false,
+      elementId: null,
+      rationale:
+        "I couldn't determine whether this screen helps with that goal. Try a different screenshot.",
+    };
   }
 
   const result: AnalyzeResult = {
@@ -175,6 +246,7 @@ export async function POST(request: Request) {
     appGuess: modelResult.appGuess,
     warnings: modelResult.warnings,
     elements,
+    goalAnswer,
   };
 
   return NextResponse.json(result, {

@@ -9,6 +9,7 @@ import {
   type HistoryEntry,
 } from "@/lib/local-history";
 import { ResultView } from "./ResultView";
+import { GoalSelector } from "./GoalSelector";
 
 type Phase =
   | { name: "idle" }
@@ -30,6 +31,7 @@ async function readImageDimensions(
 
 export function Analyzer({ initialFile }: { initialFile?: File }) {
   const [phase, setPhase] = useState<Phase>({ name: "idle" });
+  const [goal, setGoal] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const objectUrlRef = useRef<string | null>(null);
 
@@ -100,6 +102,7 @@ export function Analyzer({ initialFile }: { initialFile?: File }) {
       form.append("image", file);
       form.append("width", String(width));
       form.append("height", String(height));
+      if (goal) form.append("goal", goal);
       const res = await fetch("/api/analyze", { method: "POST", body: form });
       const json = await res.json();
       if (!res.ok) {
@@ -146,31 +149,44 @@ export function Analyzer({ initialFile }: { initialFile?: File }) {
 
   if (phase.name === "done") {
     return (
-      <div className="space-y-5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm text-[var(--muted)]">
-            Saved to this device only.{" "}
-            <Link
-              href={`/history/${phase.entryId}`}
-              className="font-semibold text-[var(--accent)] hover:underline"
-            >
-              Open in Saved →
-            </Link>
-          </p>
+      <div className="space-y-4">
+        <div className="sticky top-[57px] z-30 -mx-4 flex items-center justify-between gap-3 border-b border-[var(--line)] bg-[var(--background)]/85 px-4 py-2.5 backdrop-blur sm:-mx-6 sm:px-6">
           <button
             onClick={reset}
-            className="font-display rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 py-1.5 text-sm font-semibold hover:border-[var(--accent)] hover:text-[var(--accent-deep)]"
+            className="font-display inline-flex items-center gap-1.5 rounded-full bg-[var(--accent)] px-4 py-2 text-[13px] font-bold text-white hover:bg-[var(--accent-deep)]"
           >
-            New screenshot
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M12 8V16M8 12H16"
+                stroke="currentColor"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+              />
+              <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" />
+            </svg>
+            Scan another
           </button>
+          <Link
+            href={`/history/${phase.entryId}`}
+            className="font-display text-[13px] font-semibold text-[var(--accent)] hover:underline"
+          >
+            Open in Saved →
+          </Link>
         </div>
-        <ResultView imageUrl={phase.url} result={phase.result} />
+        <ResultView imageUrl={phase.url} result={phase.result} onScanAnother={reset} />
       </div>
     );
   }
 
   return (
     <div className="space-y-4">
+      <GoalSelector value={goal} onChange={setGoal} />
       <label
         htmlFor="image-input"
         onDragOver={(e) => e.preventDefault()}

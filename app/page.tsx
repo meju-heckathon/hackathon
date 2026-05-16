@@ -1,4 +1,5 @@
 import { Analyzer } from "@/components/Analyzer";
+import { RecentScreens } from "@/components/RecentScreens";
 
 export default function HomePage() {
   return (
@@ -25,6 +26,7 @@ export default function HomePage() {
         </p>
       </section>
       <Analyzer />
+      <RecentScreens />
     </div>
   );
 }

@@ -18,9 +18,11 @@ const RISK_CHIP = {
 export function ResultView({
   imageUrl,
   result,
+  onScanAnother,
 }: {
   imageUrl: string;
   result: AnalyzeResult;
+  onScanAnother?: () => void;
 }) {
   const [activeId, setActiveId] = useState<number | null>(null);
   const [expanded, setExpanded] = useState(false);
@@ -46,6 +48,13 @@ export function ResultView({
       inline: "nearest",
     });
   }, [activeId]);
+
+  // When a goal-target element is present, highlight it on mount.
+  useEffect(() => {
+    if (result.goalAnswer?.found && result.goalAnswer.elementId != null) {
+      setActiveId(result.goalAnswer.elementId);
+    }
+  }, [result.goalAnswer]);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -139,11 +148,65 @@ export function ResultView({
         </button>
 
         <div className="flex-1 space-y-3 overflow-y-auto px-4 pb-6 lg:px-0 lg:pb-0">
+          {result.goalAnswer && (
+            <div
+              className={`rounded-[18px] border p-5 ${
+                result.goalAnswer.found
+                  ? "border-[var(--accent)]/40 bg-[var(--accent-soft)]"
+                  : "border-[var(--caution)]/40 bg-[#FFF6EC] dark:bg-[#2a2014]"
+              }`}
+            >
+              <p
+                className={`font-display text-[11px] font-bold uppercase tracking-[0.08em] ${
+                  result.goalAnswer.found
+                    ? "text-[var(--accent-deep)]"
+                    : "text-[var(--caution)]"
+                }`}
+              >
+                Your goal · {result.goalAnswer.goal}
+              </p>
+              {result.goalAnswer.found && result.goalAnswer.elementId != null ? (
+                <>
+                  <h2 className="font-display mt-2 flex items-center gap-2 text-[17px] font-bold leading-snug tracking-[-0.02em]">
+                    <span
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--accent)] text-[12px] font-bold text-white"
+                      aria-hidden="true"
+                    >
+                      {result.goalAnswer.elementId}
+                    </span>
+                    Tap button #{result.goalAnswer.elementId}
+                  </h2>
+                  <p className="mt-1.5 text-[13.5px] leading-relaxed text-[var(--fg-sub)]">
+                    {result.goalAnswer.rationale}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      result.goalAnswer?.elementId != null &&
+                      select(result.goalAnswer.elementId)
+                    }
+                    className="font-display mt-3 inline-flex items-center gap-1.5 rounded-full bg-[var(--accent)] px-3.5 py-1.5 text-[12px] font-bold text-white hover:bg-[var(--accent-deep)]"
+                  >
+                    Highlight on screen →
+                  </button>
+                </>
+              ) : (
+                <>
+                  <h2 className="font-display mt-2 text-[16px] font-bold leading-snug tracking-[-0.02em]">
+                    Not on this screen
+                  </h2>
+                  <p className="mt-1.5 text-[13.5px] leading-relaxed text-[var(--fg-sub)]">
+                    {result.goalAnswer.rationale}
+                  </p>
+                </>
+              )}
+            </div>
+          )}
           <div className="rounded-[18px] border border-[var(--line)] bg-[var(--surface)] p-5 lg:bg-[var(--surface)]">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="font-display text-[11px] font-bold uppercase tracking-[0.08em] text-[var(--accent-deep)]">
-                  Screen
+                  Screen · Korean → English
                 </p>
                 <h2 className="font-display mt-2 text-[17px] font-bold leading-snug tracking-[-0.02em] text-[var(--foreground)]">
                   {result.screen}
@@ -246,7 +309,17 @@ export function ResultView({
                       <p className="mt-0.5 truncate text-[11.5px] text-[var(--muted)]">
                         {el.koreanText}
                       </p>
-                      <p className="mt-1.5 text-[13px] leading-relaxed text-[var(--fg-sub)]">
+                      {el.termGloss && (
+                        <div className="mt-2 rounded-[10px] bg-[var(--accent-soft)] p-2.5">
+                          <p className="font-display text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--accent-deep)]">
+                            What is this?
+                          </p>
+                          <p className="mt-0.5 text-[12.5px] leading-relaxed text-[var(--fg-sub)]">
+                            {el.termGloss}
+                          </p>
+                        </div>
+                      )}
+                      <p className="mt-2 text-[13px] leading-relaxed text-[var(--fg-sub)]">
                         {el.explanation}
                       </p>
                     </div>
@@ -255,6 +328,54 @@ export function ResultView({
               );
             })}
           </ol>
+
+          {onScanAnother && (
+            <button
+              type="button"
+              onClick={onScanAnother}
+              className="group relative w-full overflow-hidden rounded-[18px] bg-[var(--foreground)] p-5 text-left text-white transition hover:scale-[1.01]"
+            >
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute -right-20 -top-24 h-[260px] w-[260px] rounded-full bg-[radial-gradient(circle,rgba(49,130,246,0.4),transparent_60%)]"
+              />
+              <span className="relative z-10 block">
+                <span className="font-display text-[11px] font-bold uppercase tracking-[0.08em] text-white/55">
+                  Next step
+                </span>
+                <span className="font-display mt-1.5 block text-[16px] font-bold leading-tight tracking-[-0.02em]">
+                  Got a new screen to translate?
+                </span>
+                <span className="mt-1 block text-[12.5px] text-white/65">
+                  Snap another screenshot — same fast pipeline, no setup.
+                </span>
+                <span className="font-display mt-3 inline-flex items-center gap-1.5 rounded-full bg-[var(--accent)] px-3.5 py-2 text-[12.5px] font-bold">
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="9"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    />
+                    <path
+                      d="M12 8V16M8 12H16"
+                      stroke="currentColor"
+                      strokeWidth="2.4"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  Scan another screen
+                </span>
+              </span>
+            </button>
+          )}
         </div>
       </aside>
     </div>

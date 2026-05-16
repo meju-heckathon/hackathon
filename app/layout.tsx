@@ -35,7 +35,7 @@ export default function RootLayout({
       <body className="flex min-h-full flex-col font-sans">
         <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--background)]/85 backdrop-blur">
           <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
-            <Link href="/" className="flex items-center gap-2.5">
+            <a href="/" className="flex items-center gap-2.5">
               <span
                 aria-hidden="true"
                 className="font-display inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--accent-deep)] to-[var(--accent)] text-base font-extrabold tracking-tighter text-white"
@@ -45,7 +45,7 @@ export default function RootLayout({
               <span className="font-display text-[17px] font-bold tracking-tight">
                 Bankly
               </span>
-            </Link>
+            </a>
             <nav className="flex items-center gap-1 text-sm">
               <Link
                 href="/history"

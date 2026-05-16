@@ -52,19 +52,63 @@ export function HistoryDetail({ id }: { id: string }) {
   }
 
   return (
-    <div className="space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <div className="space-y-4">
+      <div className="sticky top-[57px] z-30 -mx-4 flex items-center justify-between gap-3 border-b border-[var(--line)] bg-[var(--background)]/85 px-4 py-2.5 backdrop-blur sm:-mx-6 sm:px-6">
         <Link
           href="/history"
-          className="font-display text-sm font-semibold text-[var(--accent)] hover:underline"
+          className="font-display inline-flex items-center gap-1.5 text-[13px] font-semibold text-[var(--fg-sub)] hover:text-[var(--accent-deep)]"
         >
-          ← All saved
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M15 6L9 12L15 18"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          All saved
         </Link>
-        <p className="text-[11.5px] text-[var(--muted)]">
-          {new Date(entry.createdAt).toLocaleString()}
-        </p>
+        <a
+          href="/"
+          className="font-display inline-flex items-center gap-1.5 rounded-full bg-[var(--accent)] px-4 py-2 text-[13px] font-bold text-white hover:bg-[var(--accent-deep)]"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" />
+            <path
+              d="M12 8V16M8 12H16"
+              stroke="currentColor"
+              strokeWidth="2.4"
+              strokeLinecap="round"
+            />
+          </svg>
+          Scan another
+        </a>
       </div>
-      {url && <ResultView imageUrl={url} result={entry.result} />}
+      <p className="text-[11.5px] text-[var(--muted)]">
+        Scanned {new Date(entry.createdAt).toLocaleString()}
+      </p>
+      {url && (
+        <ResultView
+          imageUrl={url}
+          result={entry.result}
+          onScanAnother={() => {
+            window.location.href = "/";
+          }}
+        />
+      )}
     </div>
   );
 }
