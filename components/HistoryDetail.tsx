@@ -36,16 +36,16 @@ export function HistoryDetail({ id }: { id: string }) {
 
   if (entry === null) {
     return (
-      <div className="rounded-2xl border border-dashed border-[var(--border)] p-10 text-center">
-        <p className="text-[var(--muted)]">
+      <div className="rounded-[22px] border border-dashed border-[var(--line)] bg-[var(--surface)] p-12 text-center">
+        <p className="text-[14.5px] text-[var(--fg-sub)]">
           This entry isn&apos;t on this device. It may have been opened in a
           different browser, or cleared.
         </p>
         <Link
           href="/history"
-          className="mt-4 inline-block text-sm text-[var(--accent)] hover:underline"
+          className="font-display mt-4 inline-block text-sm font-semibold text-[var(--accent)] hover:underline"
         >
-          ← Back to history
+          ← Back to Saved
         </Link>
       </div>
     );
@@ -56,11 +56,11 @@ export function HistoryDetail({ id }: { id: string }) {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Link
           href="/history"
-          className="text-sm text-[var(--accent)] hover:underline"
+          className="font-display text-sm font-semibold text-[var(--accent)] hover:underline"
         >
-          ← All screenshots
+          ← All saved
         </Link>
-        <p className="text-xs text-[var(--muted)]">
+        <p className="text-[11.5px] text-[var(--muted)]">
           {new Date(entry.createdAt).toLocaleString()}
         </p>
       </div>

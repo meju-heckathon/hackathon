@@ -1,13 +1,13 @@
 {
-  "name": "Hangul Finance Lens",
-  "short_name": "Finance Lens",
-  "description": "Read Korean banking apps in English.",
+  "name": "Bankly — Korean banking in your language",
+  "short_name": "Bankly",
+  "description": "Snap a Korean banking screen, get answers in English.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "theme_color": "#2563eb",
-  "background_color": "#f7f7f5",
+  "theme_color": "#3182f6",
+  "background_color": "#f2f4f6",
   "icons": [
     {
       "src": "/icon.svg",

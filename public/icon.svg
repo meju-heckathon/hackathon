@@ -1,6 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="96" fill="#2563eb"/>
-  <circle cx="220" cy="220" r="120" fill="none" stroke="#ffffff" stroke-width="32"/>
-  <line x1="306" y1="306" x2="400" y2="400" stroke="#ffffff" stroke-width="40" stroke-linecap="round"/>
-  <text x="220" y="248" font-family="system-ui, sans-serif" font-size="120" font-weight="700" text-anchor="middle" fill="#ffffff">한</text>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1B64DA"/>
+      <stop offset="100%" stop-color="#3182F6"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#g)"/>
+  <text x="256" y="340" font-family="-apple-system, system-ui, sans-serif" font-size="300" font-weight="800" text-anchor="middle" fill="#ffffff" letter-spacing="-14">B</text>
 </svg>

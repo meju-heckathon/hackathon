@@ -95,8 +95,11 @@ export function Analyzer({ initialFile }: { initialFile?: File }) {
     setPhase({ name: "analyzing", url });
 
     try {
+      const { width, height } = await readImageDimensions(url);
       const form = new FormData();
       form.append("image", file);
+      form.append("width", String(width));
+      form.append("height", String(height));
       const res = await fetch("/api/analyze", { method: "POST", body: form });
       const json = await res.json();
       if (!res.ok) {
@@ -108,7 +111,6 @@ export function Analyzer({ initialFile }: { initialFile?: File }) {
         return;
       }
       const result = json as AnalyzeResult;
-      const { width, height } = await readImageDimensions(url);
       const entry: HistoryEntry = {
         id: makeId(),
         createdAt: Date.now(),
@@ -147,17 +149,17 @@ export function Analyzer({ initialFile }: { initialFile?: File }) {
       <div className="space-y-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm text-[var(--muted)]">
-            Saved to your device only.{" "}
+            Saved to this device only.{" "}
             <Link
               href={`/history/${phase.entryId}`}
-              className="text-[var(--accent)] hover:underline"
+              className="font-semibold text-[var(--accent)] hover:underline"
             >
-              Open in history →
+              Open in Saved →
             </Link>
           </p>
           <button
             onClick={reset}
-            className="rounded-full border border-[var(--border)] px-4 py-1.5 text-sm hover:border-[var(--accent)]"
+            className="font-display rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 py-1.5 text-sm font-semibold hover:border-[var(--accent)] hover:text-[var(--accent-deep)]"
           >
             New screenshot
           </button>
@@ -168,64 +170,126 @@ export function Analyzer({ initialFile }: { initialFile?: File }) {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <label
         htmlFor="image-input"
         onDragOver={(e) => e.preventDefault()}
         onDrop={onDrop}
-        className="block cursor-pointer rounded-3xl border-2 border-dashed border-[var(--border)] bg-[var(--card)] p-10 text-center transition hover:border-[var(--accent)]"
+        className="relative block cursor-pointer overflow-hidden rounded-[22px] bg-[var(--foreground)] p-6 text-white shadow-[0_24px_48px_-20px_rgba(15,30,60,0.35)] transition hover:scale-[1.005] sm:p-8"
       >
-        {phase.name === "idle" && (
-          <>
-            <div className="text-5xl">📸</div>
-            <p className="mt-3 font-medium">
-              Tap to pick a screenshot
-            </p>
-            <p className="mt-1 text-sm text-[var(--muted)]">
-              or drag &amp; drop · or paste from clipboard (⌘V / Ctrl+V)
-            </p>
-          </>
-        )}
-        {phase.name === "ready" && (
-          <div className="space-y-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={phase.url}
-              alt="Selected screenshot"
-              className="mx-auto max-h-80 rounded-xl shadow"
-            />
-            <p className="text-sm text-[var(--muted)]">
-              {phase.file.name} · {(phase.file.size / 1024).toFixed(0)} KB
-            </p>
-          </div>
-        )}
-        {phase.name === "analyzing" && (
-          <div className="space-y-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={phase.url}
-              alt="Analyzing"
-              className="mx-auto max-h-80 rounded-xl opacity-60 shadow"
-            />
-            <p className="font-medium">Reading the screen…</p>
-            <p className="text-xs text-[var(--muted)]">
-              Usually 5–10 seconds.
-            </p>
-          </div>
-        )}
-        {phase.name === "error" && (
-          <div className="space-y-3">
-            {phase.url && (
-              /* eslint-disable-next-line @next/next/no-img-element */
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-32 -top-40 h-[420px] w-[420px] rounded-full bg-[radial-gradient(circle,rgba(49,130,246,0.45),transparent_60%)]"
+        />
+        <div className="relative z-10">
+          {phase.name === "idle" && (
+            <div className="grid items-center gap-6 sm:grid-cols-[1fr_140px]">
+              <div>
+                <p className="font-display mb-2 text-[11px] font-bold uppercase tracking-[0.08em] text-white/55">
+                  Add a screen
+                </p>
+                <h2 className="font-display text-[22px] font-bold leading-[1.25] tracking-[-0.025em] sm:text-2xl">
+                  Snap or upload a bank screenshot
+                </h2>
+                <p className="mt-2 max-w-xs text-[13px] leading-relaxed text-white/70">
+                  English guidance in ~6 seconds. Drag &amp; drop, paste (⌘V),
+                  or pick from your photos.
+                </p>
+                <span className="font-display mt-4 inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2.5 text-[13px] font-bold text-white">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="9"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    />
+                    <path
+                      d="M12 8V16M8 12H16"
+                      stroke="currentColor"
+                      strokeWidth="2.4"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  Camera or Photos
+                </span>
+              </div>
+              <div
+                aria-hidden="true"
+                className="relative mx-auto hidden h-[160px] w-[120px] rotate-6 rounded-2xl bg-white shadow-2xl sm:block"
+              >
+                <span className="absolute left-3 right-3 top-3 h-1 rounded bg-[var(--line)]" />
+                <span className="absolute left-3 right-3 top-7 h-1.5 rounded bg-[var(--line-soft)]" />
+                <span className="absolute left-3 right-3 top-11 h-1.5 rounded bg-[var(--line-soft)]" />
+                <span className="absolute left-3 right-3 top-16 h-1.5 rounded bg-[var(--line-soft)]" />
+                <span className="absolute bottom-3 left-3 right-3 h-5 rounded-md bg-[var(--accent)]" />
+              </div>
+            </div>
+          )}
+          {phase.name === "ready" && (
+            <div className="grid items-center gap-5 sm:grid-cols-[1fr_180px]">
+              <div>
+                <p className="font-display mb-2 text-[11px] font-bold uppercase tracking-[0.08em] text-white/55">
+                  Ready to translate
+                </p>
+                <h2 className="font-display text-xl font-bold leading-tight tracking-[-0.02em]">
+                  {phase.file.name}
+                </h2>
+                <p className="mt-1 text-[12.5px] text-white/60">
+                  {(phase.file.size / 1024).toFixed(0)} KB
+                </p>
+              </div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={phase.url}
-                alt="Errored"
-                className="mx-auto max-h-60 rounded-xl shadow"
+                alt="Selected screenshot"
+                className="mx-auto max-h-44 rounded-xl shadow-2xl"
               />
-            )}
-            <p className="font-medium text-[var(--danger)]">{phase.message}</p>
-          </div>
-        )}
+            </div>
+          )}
+          {phase.name === "analyzing" && (
+            <div className="grid items-center gap-5 sm:grid-cols-[1fr_180px]">
+              <div>
+                <p className="font-display mb-2 text-[11px] font-bold uppercase tracking-[0.08em] text-[var(--accent)]">
+                  Working on it
+                </p>
+                <h2 className="font-display text-xl font-bold leading-tight tracking-[-0.02em]">
+                  Reading the screen…
+                </h2>
+                <div className="mt-3 flex items-center gap-1.5">
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--accent)]" />
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--accent)] [animation-delay:0.15s]" />
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--accent)] [animation-delay:0.3s]" />
+                </div>
+                <p className="mt-3 text-[12.5px] text-white/60">
+                  First run takes ~30s while Korean OCR loads. After that, ~6s.
+                </p>
+              </div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={phase.url}
+                alt="Analyzing"
+                className="mx-auto max-h-44 rounded-xl opacity-70 shadow-2xl"
+              />
+            </div>
+          )}
+          {phase.name === "error" && (
+            <div className="space-y-3">
+              <p className="font-display text-[11px] font-bold uppercase tracking-[0.08em] text-[var(--danger)]">
+                Something went wrong
+              </p>
+              <h2 className="font-display text-lg font-bold leading-tight tracking-[-0.02em]">
+                {phase.message}
+              </h2>
+            </div>
+          )}
+        </div>
         <input
           ref={inputRef}
           id="image-input"
@@ -239,27 +303,42 @@ export function Analyzer({ initialFile }: { initialFile?: File }) {
         />
       </label>
 
-      <div className="flex flex-wrap items-center justify-center gap-3">
+      <div className="flex flex-wrap items-center justify-end gap-2">
         {phase.name === "ready" && (
           <>
             <button
-              onClick={analyze}
-              className="rounded-full bg-[var(--accent)] px-6 py-3 font-semibold text-white shadow hover:opacity-90"
-            >
-              Translate this screen →
-            </button>
-            <button
               onClick={reset}
-              className="rounded-full border border-[var(--border)] px-4 py-2 text-sm hover:border-[var(--accent)]"
+              className="font-display rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 py-2.5 text-sm font-semibold hover:border-[var(--accent)] hover:text-[var(--accent-deep)]"
             >
               Pick another
+            </button>
+            <button
+              onClick={analyze}
+              className="font-display inline-flex items-center gap-1.5 rounded-full bg-[var(--accent)] px-6 py-2.5 text-sm font-bold text-white shadow hover:bg-[var(--accent-deep)]"
+            >
+              Translate this screen
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M5 12H19M12 5L19 12L12 19"
+                  stroke="currentColor"
+                  strokeWidth="2.4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
             </button>
           </>
         )}
         {phase.name === "error" && (
           <button
             onClick={reset}
-            className="rounded-full border border-[var(--border)] px-4 py-2 text-sm hover:border-[var(--accent)]"
+            className="font-display rounded-full bg-[var(--accent)] px-5 py-2.5 text-sm font-bold text-white hover:bg-[var(--accent-deep)]"
           >
             Try again
           </button>

@@ -55,13 +55,33 @@ export function HistoryList() {
 
   if (entries.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-[var(--border)] p-10 text-center">
-        <p className="text-[var(--muted)]">Nothing here yet.</p>
+      <div className="rounded-[22px] border border-dashed border-[var(--line)] bg-[var(--surface)] p-12 text-center">
+        <p className="font-display text-[15px] font-semibold text-[var(--fg-sub)]">
+          Nothing saved yet.
+        </p>
+        <p className="mt-1 text-[13px] text-[var(--muted)]">
+          Translated screens you analyze will show up here.
+        </p>
         <Link
           href="/"
-          className="mt-4 inline-block rounded-full bg-[var(--accent)] px-5 py-2 text-sm font-semibold text-white hover:opacity-90"
+          className="font-display mt-5 inline-flex items-center gap-1.5 rounded-full bg-[var(--accent)] px-5 py-2.5 text-sm font-bold text-white hover:bg-[var(--accent-deep)]"
         >
-          Upload a screenshot
+          Snap a screenshot
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M5 12H19M12 5L19 12L12 19"
+              stroke="currentColor"
+              strokeWidth="2.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </Link>
       </div>
     );
@@ -72,20 +92,20 @@ export function HistoryList() {
       <div className="flex justify-end">
         <button
           onClick={wipe}
-          className="text-xs text-[var(--danger)] hover:underline"
+          className="font-display text-[11.5px] font-bold uppercase tracking-[0.06em] text-[var(--danger)] hover:underline"
         >
           Clear all
         </button>
       </div>
-      <ul className="space-y-3">
+      <ul className="space-y-2.5">
         {entries.map((e) => (
           <li
             key={e.id}
-            className="flex gap-4 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3"
+            className="grid grid-cols-[68px_1fr_auto] items-center gap-4 rounded-[14px] border border-[var(--line)] bg-[var(--surface)] p-3 transition hover:border-[var(--accent)] hover:shadow-[0_10px_24px_-12px_rgba(49,130,246,0.35)]"
           >
             <Link
               href={`/history/${e.id}`}
-              className="block h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-[var(--accent-soft)]"
+              className="block h-[88px] w-[68px] shrink-0 overflow-hidden rounded-[10px] border border-[var(--line)] bg-gradient-to-b from-[#f8f9fa] to-[#eef1f4]"
             >
               {urls[e.id] && (
                 /* eslint-disable-next-line @next/next/no-img-element */
@@ -96,33 +116,49 @@ export function HistoryList() {
                 />
               )}
             </Link>
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0">
+              {e.result.appGuess && (
+                <span className="font-display inline-flex items-center rounded-full bg-[var(--accent-soft)] px-2 py-0.5 text-[10.5px] font-bold tracking-tight text-[var(--accent-deep)]">
+                  {e.result.appGuess}
+                </span>
+              )}
               <Link
                 href={`/history/${e.id}`}
-                className="block font-semibold hover:underline"
+                className="font-display mt-1.5 block truncate text-[14.5px] font-bold leading-tight tracking-[-0.02em] hover:underline"
               >
                 {e.result.screen}
               </Link>
-              {e.result.appGuess && (
-                <p className="text-xs text-[var(--muted)]">
-                  {e.result.appGuess}
-                </p>
-              )}
-              <p className="mt-1 text-xs text-[var(--muted)]">
-                {new Date(e.createdAt).toLocaleString()} ·{" "}
-                {e.result.elements.length} elements
+              <p className="mt-0.5 text-[12px] text-[var(--muted)]">
+                {e.result.elements.length} buttons
               </p>
             </div>
-            <button
-              onClick={() => remove(e.id)}
-              className="self-start text-xs text-[var(--muted)] hover:text-[var(--danger)]"
-              aria-label="Delete"
-            >
-              ✕
-            </button>
+            <div className="flex flex-col items-end gap-2">
+              <span className="text-[11px] text-[var(--muted)]">
+                {relativeTime(e.createdAt)}
+              </span>
+              <button
+                onClick={() => remove(e.id)}
+                className="text-[13px] text-[var(--muted)] hover:text-[var(--danger)]"
+                aria-label="Delete"
+              >
+                ✕
+              </button>
+            </div>
           </li>
         ))}
       </ul>
     </div>
   );
+}
+
+function relativeTime(ts: number) {
+  const diff = Date.now() - ts;
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return "now";
+  if (m < 60) return `${m}m`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h`;
+  const d = Math.floor(h / 24);
+  if (d < 7) return `${d}d`;
+  return new Date(ts).toLocaleDateString();
 }

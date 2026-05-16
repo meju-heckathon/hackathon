@@ -16,32 +16,76 @@ export type AnalyzeResult = {
   warnings: string[];
 };
 
-export const SYSTEM_PROMPT = `You are an assistant that helps non-Korean speakers (English users) understand Korean financial mobile app UIs (banking, transfers, investment, crypto, payments).
+export type ModelElement = {
+  id: number;
+  label: string;
+  koreanText: string;
+  explanation: string;
+  risk: "safe" | "caution" | "danger";
+  ocrIds: number[];
+  fullRow: boolean;
+};
 
-You will be given a single screenshot. Identify every interactive UI element a user could tap, press, or fill in — buttons, tabs, menu rows, form fields, toggles, links. Ignore purely decorative text.
+export type ModelResult = {
+  screen: string;
+  appGuess: string | null;
+  warnings: string[];
+  elements: ModelElement[];
+};
 
-For each element, return:
-- "label": a short English label (max 4 words) describing the element's PURPOSE, not a literal translation
-- "koreanText": the exact Korean text shown on the element (verbatim, including symbols)
-- "explanation": 1–2 sentences in plain English explaining what happens if the user activates it, considering Korean financial app conventions. Be specific about consequences (e.g., "sends money immediately", "leaves this app to open the bank's site").
-- "risk": "safe" (read-only / navigation), "caution" (changes settings, requires confirmation), or "danger" (transfers money, signs contracts, deletes data, leaves app to external site)
-- "bbox": approximate bounding box as fractions of the image, where 0,0 is the top-left corner. x and y are the top-left of the box. All four numbers between 0 and 1.
+export const SYSTEM_PROMPT = `You help non-Korean speakers understand Korean financial mobile app UIs — banking, transfers, investment, crypto, payments.
+
+You will receive (a) a screenshot, and (b) a numbered list of text fragments that an OCR engine already extracted from that screenshot, each with an "ocr id".
+
+Your job: identify the interactive UI elements (buttons, menu rows, tabs, form fields, toggles, links). For each element:
+- "label": short English label (max 4 words) describing PURPOSE, not a literal translation
+- "koreanText": the exact Korean (or English) text on the element, verbatim
+- "explanation": 1–2 plain English sentences on what tapping/activating it does, with consequences (e.g., "sends money immediately", "leaves the app")
+- "risk": "safe" (read-only / navigation), "caution" (changes settings), or "danger" (moves money, signs contracts, leaves app to external site)
+- "ocrIds": the OCR ids whose text together form the visible label of this element. Usually one. Use multiple if the element's label spans multiple OCR lines. Use an EMPTY array only for purely icon-only elements with no text (e.g. a back arrow with no caption).
+- "fullRow": true if the element is a full-width menu row that the user taps anywhere on (e.g. a list item with a chevron on the right). false if it's a compact button or chip.
+
+Order elements roughly top-to-bottom and number them starting at 1 in "id".
+
+Use the koreanText field to repeat the exact OCR text. Do NOT invent text that isn't in the OCR list — if you don't see it in the list, it's probably part of the background or decoration, not interactive.
 
 Also return:
-- "screen": one short sentence describing what screen the user is looking at (e.g., "Toss main account dashboard").
-- "appGuess": your best guess of which Korean app/service this is (e.g., "Toss", "KakaoBank", "Shinhan SOL"), or null if unclear.
-- "warnings": a short list of things the user should be careful about on this screen (each entry one sentence). Empty array if none.
+- "screen": one sentence on what screen the user is on
+- "appGuess": best guess of the app (e.g. "Toss", "KakaoBank", "Shinhan SOL"), or null
+- "warnings": short list of things to be careful about on this screen, or empty array`;
 
-Order elements roughly top-to-bottom, then left-to-right, and number them starting at 1 in the "id" field.
-
-Return ONLY a valid JSON object matching this exact shape:
-{
-  "screen": string,
-  "appGuess": string | null,
-  "elements": [
-    { "id": number, "label": string, "koreanText": string, "explanation": string, "risk": "safe" | "caution" | "danger", "bbox": { "x": number, "y": number, "width": number, "height": number } }
-  ],
-  "warnings": string[]
-}
-
-Do not include markdown code fences. Do not include any commentary before or after the JSON.`;
+export const JSON_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  required: ["screen", "appGuess", "elements", "warnings"],
+  properties: {
+    screen: { type: "string" },
+    appGuess: { type: ["string", "null"] },
+    warnings: { type: "array", items: { type: "string" } },
+    elements: {
+      type: "array",
+      items: {
+        type: "object",
+        additionalProperties: false,
+        required: [
+          "id",
+          "label",
+          "koreanText",
+          "explanation",
+          "risk",
+          "ocrIds",
+          "fullRow",
+        ],
+        properties: {
+          id: { type: "integer" },
+          label: { type: "string" },
+          koreanText: { type: "string" },
+          explanation: { type: "string" },
+          risk: { type: "string", enum: ["safe", "caution", "danger"] },
+          ocrIds: { type: "array", items: { type: "integer" } },
+          fullRow: { type: "boolean" },
+        },
+      },
+    },
+  },
+} as const;

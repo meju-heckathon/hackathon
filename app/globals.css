@@ -1,49 +1,75 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f7f7f5;
-  --foreground: #0d0d0d;
-  --accent: #2563eb;
-  --accent-soft: #dbe7ff;
-  --muted: #6b7280;
-  --card: #ffffff;
-  --border: #e5e5e2;
-  --safe: #16a34a;
-  --caution: #d97706;
-  --danger: #dc2626;
+  --background: #f2f4f6;
+  --surface: #ffffff;
+  --foreground: #191f28;
+  --fg-sub: #4e5968;
+  --muted: #8b95a1;
+  --line: #e5e8eb;
+  --line-soft: #f2f4f6;
+  --accent: #3182f6;
+  --accent-soft: #e8f2ff;
+  --accent-deep: #1b64da;
+  --safe: #00c896;
+  --caution: #ff6f0f;
+  --danger: #f04438;
+  --card: var(--surface);
+  --border: var(--line);
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
   --color-foreground: var(--foreground);
+  --color-fg-sub: var(--fg-sub);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
-  --color-muted: var(--muted);
-  --color-card: var(--card);
-  --color-border: var(--border);
+  --color-accent-deep: var(--accent-deep);
   --color-safe: var(--safe);
   --color-caution: var(--caution);
   --color-danger: var(--danger);
-  --font-sans: var(--font-geist-sans);
+  --color-card: var(--card);
+  --color-border: var(--border);
+  --font-sans:
+    var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Pretendard", system-ui, sans-serif;
+  --font-display:
+    var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    "Pretendard", system-ui, sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #f4f4f4;
-    --accent: #60a5fa;
-    --accent-soft: #1e2b4a;
-    --muted: #a1a1aa;
-    --card: #131313;
-    --border: #2a2a2a;
-    --safe: #4ade80;
-    --caution: #fbbf24;
-    --danger: #f87171;
+    --background: #0a0c10;
+    --surface: #141820;
+    --foreground: #f4f6f8;
+    --fg-sub: #b0b8c4;
+    --muted: #6f7785;
+    --line: #232934;
+    --line-soft: #1a1f27;
+    --accent: #4e95ff;
+    --accent-soft: #1a2438;
+    --accent-deep: #6ba6ff;
+    --safe: #2ed8a4;
+    --caution: #ff8a3a;
+    --danger: #ff6262;
+    --card: var(--surface);
+    --border: var(--line);
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.025em;
 }
