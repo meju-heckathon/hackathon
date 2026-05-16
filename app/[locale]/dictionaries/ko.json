@@ -1,0 +1,66 @@
+{
+  "meta": {
+    "title": "Korea Wait — 한국 인기 식당 줄서기 건너뛰기",
+    "description": "한국 인기 식당의 실시간 웨이팅을 모국어로 신청하세요."
+  },
+  "nav": {
+    "home": "홈",
+    "restaurants": "식당",
+    "myWait": "내 웨이팅"
+  },
+  "home": {
+    "hero": {
+      "title": "한국 인기 식당, 줄 서지 말고 모국어로 웨이팅하세요",
+      "subtitle": "메뉴를 살펴보고 실시간 대기 시간을 확인한 뒤, 모국어로 웨이팅을 등록할 수 있어요.",
+      "cta": "식당 둘러보기"
+    },
+    "features": {
+      "title": "여행자를 위해 만들었어요",
+      "items": [
+        { "title": "실시간 대기 시간", "body": "전화 없이도 정확한 입장 예상 시간을 확인하세요." },
+        { "title": "4개 언어 메뉴", "body": "메뉴, 알레르기 정보, 가격을 English, 한국어, 日本語, 中文로 제공합니다." },
+        { "title": "SMS 알림", "body": "테이블이 거의 준비되면 문자로 알려드려요. 그동안 자유롭게 둘러보세요." }
+      ]
+    },
+    "popular": "지금 인기 있는 곳"
+  },
+  "restaurants": {
+    "title": "식당",
+    "filters": {
+      "all": "전체",
+      "korean": "고기/한식",
+      "noodle": "면 요리",
+      "street": "길거리 음식",
+      "cafe": "카페"
+    },
+    "card": {
+      "waiting": "{count}팀 대기 중",
+      "avgWait": "약 {minutes}분",
+      "join": "웨이팅 등록"
+    },
+    "detail": {
+      "address": "주소",
+      "hours": "영업시간",
+      "menu": "메뉴",
+      "joinTitle": "웨이팅 등록",
+      "partySize": "인원",
+      "phone": "전화번호 (SMS 수신용)",
+      "phoneHint": "테이블이 준비되면 문자를 보내드려요.",
+      "name": "이름",
+      "submit": "등록 — 앞에 {count}팀",
+      "submitted": "현재 {position}번째 순서입니다. 입장이 가까워지면 {phone}으로 문자를 보내드릴게요.",
+      "leave": "웨이팅 취소"
+    }
+  },
+  "myWait": {
+    "title": "내가 등록한 웨이팅",
+    "empty": "아직 등록한 웨이팅이 없어요.",
+    "browse": "식당 둘러보기",
+    "position": "순서",
+    "estimated": "예상 대기 시간"
+  },
+  "footer": {
+    "tagline": "한국 여행자를 위해.",
+    "language": "언어"
+  }
+}

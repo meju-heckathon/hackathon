@@ -1,0 +1,66 @@
+{
+  "meta": {
+    "title": "Korea Wait — 韩国热门餐厅免排队",
+    "description": "用母语实时加入韩国人气餐厅的等位列表。"
+  },
+  "nav": {
+    "home": "首页",
+    "restaurants": "餐厅",
+    "myWait": "我的等位"
+  },
+  "home": {
+    "hero": {
+      "title": "不用排队,在韩国最受欢迎的餐厅用餐",
+      "subtitle": "查看菜单、实时等位时间,用您熟悉的语言加入排队。",
+      "cta": "浏览餐厅"
+    },
+    "features": {
+      "title": "为旅行者打造",
+      "items": [
+        { "title": "实时等位时间", "body": "无需打电话,准确预估入座时间。" },
+        { "title": "4种语言菜单", "body": "菜品、过敏原、价格均提供 English, 한국어, 日本語, 中文。" },
+        { "title": "短信通知", "body": "快轮到您时短信通知 — 等位期间可自由游玩。" }
+      ]
+    },
+    "popular": "当前热门"
+  },
+  "restaurants": {
+    "title": "餐厅",
+    "filters": {
+      "all": "全部",
+      "korean": "韩式烤肉",
+      "noodle": "面食",
+      "street": "街头小吃",
+      "cafe": "咖啡"
+    },
+    "card": {
+      "waiting": "{count}组等待中",
+      "avgWait": "约{minutes}分钟",
+      "join": "加入等位"
+    },
+    "detail": {
+      "address": "地址",
+      "hours": "营业时间",
+      "menu": "菜单",
+      "joinTitle": "加入等位",
+      "partySize": "人数",
+      "phone": "电话(用于短信)",
+      "phoneHint": "桌位准备好时我们会短信通知您。",
+      "name": "姓名",
+      "submit": "加入 — 前面还有{count}组",
+      "submitted": "您是第 {position} 位。快轮到您时我们会发短信到 {phone}。",
+      "leave": "取消等位"
+    }
+  },
+  "myWait": {
+    "title": "进行中的等位",
+    "empty": "您还没有加入任何等位。",
+    "browse": "浏览餐厅",
+    "position": "顺位",
+    "estimated": "预计等位时长"
+  },
+  "footer": {
+    "tagline": "为韩国旅行者打造。",
+    "language": "语言"
+  }
+}

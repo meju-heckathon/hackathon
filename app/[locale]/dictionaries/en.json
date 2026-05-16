@@ -1,0 +1,66 @@
+{
+  "meta": {
+    "title": "Korea Wait — Skip the Line at Korean Restaurants",
+    "description": "Real-time waitlists for popular restaurants in Korea, in your language."
+  },
+  "nav": {
+    "home": "Home",
+    "restaurants": "Restaurants",
+    "myWait": "My Wait"
+  },
+  "home": {
+    "hero": {
+      "title": "Skip the line at Korea's most-loved restaurants",
+      "subtitle": "Browse menus, see live wait times, and join the waitlist in your language.",
+      "cta": "Browse restaurants"
+    },
+    "features": {
+      "title": "Built for travelers",
+      "items": [
+        { "title": "Live wait times", "body": "Know exactly how long until you're seated, no awkward phone calls." },
+        { "title": "Menus in 4 languages", "body": "Dishes, allergens, and prices in English, 한국어, 日本語, 中文." },
+        { "title": "SMS notifications", "body": "We text you when your table is almost ready — go explore in the meantime." }
+      ]
+    },
+    "popular": "Popular right now"
+  },
+  "restaurants": {
+    "title": "Restaurants",
+    "filters": {
+      "all": "All",
+      "korean": "Korean BBQ",
+      "noodle": "Noodles",
+      "street": "Street food",
+      "cafe": "Cafe"
+    },
+    "card": {
+      "waiting": "{count} parties waiting",
+      "avgWait": "~{minutes} min",
+      "join": "Join waitlist"
+    },
+    "detail": {
+      "address": "Address",
+      "hours": "Hours",
+      "menu": "Menu",
+      "joinTitle": "Join the waitlist",
+      "partySize": "Party size",
+      "phone": "Phone (for SMS)",
+      "phoneHint": "We'll text you when your table is ready.",
+      "name": "Your name",
+      "submit": "Join — {count} parties ahead",
+      "submitted": "You're #{position} in line. We'll text {phone} when it's almost your turn.",
+      "leave": "Leave waitlist"
+    }
+  },
+  "myWait": {
+    "title": "Your active waitlists",
+    "empty": "You haven't joined any waitlists yet.",
+    "browse": "Browse restaurants",
+    "position": "Position",
+    "estimated": "Estimated wait"
+  },
+  "footer": {
+    "tagline": "Made for travelers in Korea.",
+    "language": "Language"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "meta": {
+    "title": "Korea Wait — 韓国の人気店をスキップ予約",
+    "description": "韓国の人気レストランのリアルタイム順番待ちを、母国語で。"
+  },
+  "nav": {
+    "home": "ホーム",
+    "restaurants": "レストラン",
+    "myWait": "順番待ち"
+  },
+  "home": {
+    "hero": {
+      "title": "並ばずに、韓国の人気店で食事を",
+      "subtitle": "メニューを確認し、リアルタイムの待ち時間を見て、母国語で順番待ちに登録できます。",
+      "cta": "レストランを見る"
+    },
+    "features": {
+      "title": "旅行者のために作りました",
+      "items": [
+        { "title": "リアルタイム待ち時間", "body": "電話なしで正確な入店予想時間がわかります。" },
+        { "title": "4言語のメニュー", "body": "料理・アレルゲン・価格を English, 한국어, 日本語, 中文 で表示。" },
+        { "title": "SMS通知", "body": "席が近づいたらSMSでお知らせ。それまでは自由に観光できます。" }
+      ]
+    },
+    "popular": "今人気のお店"
+  },
+  "restaurants": {
+    "title": "レストラン",
+    "filters": {
+      "all": "すべて",
+      "korean": "韓国焼肉",
+      "noodle": "麺",
+      "street": "屋台",
+      "cafe": "カフェ"
+    },
+    "card": {
+      "waiting": "{count}組待機中",
+      "avgWait": "約{minutes}分",
+      "join": "順番待ちに登録"
+    },
+    "detail": {
+      "address": "住所",
+      "hours": "営業時間",
+      "menu": "メニュー",
+      "joinTitle": "順番待ちに登録",
+      "partySize": "人数",
+      "phone": "電話番号 (SMS受信用)",
+      "phoneHint": "席が用意できたらSMSをお送りします。",
+      "name": "お名前",
+      "submit": "登録 — 前に{count}組",
+      "submitted": "現在{position}番目です。順番が近づいたら{phone}にSMSをお送りします。",
+      "leave": "順番待ちをキャンセル"
+    }
+  },
+  "myWait": {
+    "title": "登録中の順番待ち",
+    "empty": "登録中の順番待ちはありません。",
+    "browse": "レストランを見る",
+    "position": "順番",
+    "estimated": "予想待ち時間"
+  },
+  "footer": {
+    "tagline": "韓国を旅する人のために。",
+    "language": "言語"
+  }
+}
