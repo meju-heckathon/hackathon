@@ -150,7 +150,7 @@ export function Analyzer({ initialFile }: { initialFile?: File }) {
   if (phase.name === "done") {
     return (
       <div className="space-y-4">
-        <div className="sticky top-[57px] z-30 -mx-4 flex items-center justify-between gap-3 border-b border-[var(--line)] bg-[var(--background)]/85 px-4 py-2.5 backdrop-blur sm:-mx-6 sm:px-6">
+        <div className="sticky top-[env(safe-area-inset-top)] z-30 -mx-4 -mt-10 flex items-center justify-between gap-3 border-b border-[var(--line)] bg-[var(--background)] px-4 py-2.5 shadow-[0_4px_12px_-8px_rgba(15,30,60,0.15)] sm:-mx-6 sm:-mt-16 sm:px-6">
           <button
             onClick={reset}
             className="font-display inline-flex items-center gap-1.5 rounded-full bg-[var(--accent)] px-4 py-2 text-[13px] font-bold text-white hover:bg-[var(--accent-deep)]"

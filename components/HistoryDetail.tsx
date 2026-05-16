@@ -53,7 +53,7 @@ export function HistoryDetail({ id }: { id: string }) {
 
   return (
     <div className="space-y-4">
-      <div className="sticky top-[57px] z-30 -mx-4 flex items-center justify-between gap-3 border-b border-[var(--line)] bg-[var(--background)]/85 px-4 py-2.5 backdrop-blur sm:-mx-6 sm:px-6">
+      <div className="sticky top-[env(safe-area-inset-top)] z-30 -mx-4 -mt-8 flex items-center justify-between gap-3 border-b border-[var(--line)] bg-[var(--background)] px-4 py-2.5 shadow-[0_4px_12px_-8px_rgba(15,30,60,0.15)] sm:-mx-6 sm:px-6">
         <Link
           href="/history"
           className="font-display inline-flex items-center gap-1.5 text-[13px] font-semibold text-[var(--fg-sub)] hover:text-[var(--accent-deep)]"

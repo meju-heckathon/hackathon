@@ -21,7 +21,7 @@ export default function HomePage() {
         </h1>
         <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-[var(--fg-sub)] sm:text-[17px]">
           No more guessing which button is which. Upload a screenshot from KB,
-          신한, 하나, 우리, 카카오뱅크, or 토스 and Bankly walks you through —
+          신한, 하나, 우리, 카카오뱅크, or 토스 and MEJU walks you through —
           step by step, in ~6 seconds.
         </p>
       </section>

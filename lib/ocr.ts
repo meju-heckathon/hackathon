@@ -11,10 +11,14 @@ let workerPromise: Promise<Worker> | null = null;
 
 function getWorker() {
   if (!workerPromise) {
-    workerPromise = createWorker(["kor", "eng"]).catch((err) => {
-      workerPromise = null;
-      throw err;
-    });
+    // On Vercel/serverless, only /tmp is writable. Locally this is a fine cache too.
+    const cachePath = process.env.VERCEL ? "/tmp" : ".";
+    workerPromise = createWorker(["kor", "eng"], 1, { cachePath }).catch(
+      (err) => {
+        workerPromise = null;
+        throw err;
+      },
+    );
   }
   return workerPromise;
 }

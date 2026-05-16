@@ -152,7 +152,7 @@ export function GoalSelector({
             value={customText}
             onChange={(e) => setCustomText(e.target.value)}
             placeholder="e.g. cancel my auto-transfer"
-            className="font-display flex-1 rounded-full border border-[var(--line)] bg-[var(--background)] px-3.5 py-2 text-[13px] outline-none focus:border-[var(--accent)]"
+            className="font-display flex-1 rounded-full border border-[var(--line)] bg-[var(--background)] px-3.5 py-2 text-[16px] outline-none focus:border-[var(--accent)]"
           />
           <button
             type="submit"
